@@ -1,0 +1,30 @@
+﻿* {
+    padding: 0;margin: 0;border: 0;outline: 0;
+    box-sizing:border-box;
+    -webkit-box-sizing:border-box; 
+}
+html {font-size: 62.5%}
+a {text-decoration: none}
+body {font-size: 12px;-webkit-user-select: none;-webkit-text-size-adjust: none;-webkit-tap-highlight-color:rgba(0,0,0,0);font-family: Microsoft Yahei, simsun,Tahoma,Helvetica,Arial,SimHei,sans-serif}
+a, img {-webkit-touch-callout:none}
+img,video {vertical-align: bottom}
+ul {list-style-type: none}
+
+.hidden{
+	display: none !important;
+}
+
+.invisible{
+	visibility: hidden;
+}
+
+.clearfix, .cf {
+    zoom: 1;
+    &:after {
+	    content: "";
+	    display: block;
+	    height: 0;
+	    clear: both;
+	    visibility: hidden;
+	}
+}
