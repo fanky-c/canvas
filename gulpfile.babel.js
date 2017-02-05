@@ -1,5 +1,6 @@
 'use strict';
 import path from 'path';
+import fs from 'fs';
 import util from './lib/util';
 import gulp from 'gulp';
 import babel from 'gulp-babel';
@@ -15,6 +16,10 @@ import gulpJade from 'gulp-jade';
 import runSequence from 'run-sequence';
 import es from 'event-stream';
 import through from 'through2';
+import filter from 'gulp-filter';
+import rename from 'gulp-rename'; // rename the files
+import concat from 'gulp-concat'; // concat the files into single file
+import replacePath from 'gulp-replace-path';
 import 'colors';
 
 
@@ -101,7 +106,7 @@ gulp.task('css',() => {
                     path.join(__dirname, 'src', 'components')
                 )
             ),
-            util.joinFormat(iConfig.dest.hostname, iConfig.dest.path.images, 'globalcomponents')
+            //util.joinFormat(iConfig.dest.hostname, iConfig.dest.path.images, 'globalcomponents')
         ))  
         .pipe(gulp.dest(util.joinFormat(__dirname, 'dist', 'css')))
 })

@@ -1,0 +1,11 @@
+@charset 'UTF-8';
+@import '../../sass/base/_mixin';
+@import '../../sass/base/_mobile';
+@import '../../sass/base/commons';
+
+body{
+	  background:  red;
+}
+.test{
+	 background: url('./images/test.png');
+}
