@@ -31,6 +31,7 @@ import buffer from 'vinyl-buffer';
 import babelify from 'babelify';
 
 var reload = browserSync.reload;
+var hostname = 'http://web.yystatic.com/project/group_act/2017spring/mobile';
 
 gulp.task('test',() => {
     console.log(('11111').red);
@@ -83,8 +84,6 @@ gulp.task('css',() => {
                 }
 
             };
-
-
             iCnt = iCnt
                 .replace(pathReg, replaceHandle)
                 .replace(pathReg2, replaceHandle);
@@ -106,21 +105,53 @@ gulp.task('css',() => {
                     path.join(__dirname, 'src', 'components')
                 )
             ),
-            //util.joinFormat(iConfig.dest.hostname, iConfig.dest.path.images, 'globalcomponents')
-        ))  
+            util.joinFormat(hostname, 'images', 'globalcomponents')
+        ))
+        .pipe(replacePath('../images', util.joinFormat(hostname, 'images')))
+        .pipe(replacePath('../components', util.joinFormat(hostname, 'images', 'components')))         
         .pipe(gulp.dest(util.joinFormat(__dirname, 'dist', 'css')))
 })
 
-//css
-gulp.task('sass', () => {
-  gulp.src('src/css/*.scss')
-    .pipe(plumber())
-    .pipe(sass())
-    .pipe(autoprefixer())
-    .pipe(gulp.dest('dist/css'))
-    .pipe(browserSync.reload({stream:true}))
-    .pipe(notify({ message: 'sass task complete'}));
+
+//images
+gulp.task('images',['images-components','images-img']);
+
+gulp.task('images-components', () => {
+     return gulp.src([
+            util.joinFormat(__dirname, 'src', 'components/**/*.*'),
+            '!**/*.tpl',
+            '!**/*.jade',
+            '!**/*.js',
+            '!**/*.scss',
+            '!**/*.html',
+            '!**/*.css',
+            '!**/*.md',
+            '!**/*.psd'
+        ], {
+            base: util.joinFormat(__dirname, 'src', 'components')
+        })
+        .pipe(plumber())
+        .pipe(imagemin({ progressive: true, use: [pngquant()]}))
+        .pipe(gulp.dest( util.joinFormat(__dirname, 'dist', 'images', 'components')))
 })
+
+gulp.task('images-img', () => {
+    return gulp.src([util.joinFormat(__dirname, 'src', 'images/**/*.*')], {base: util.joinFormat(__dirname, 'src', 'images')})
+        .pipe(filter(['**/*.jpg', '**/*.jpeg', '**/*.png', '**/*.bmp', '**/*.gif']))
+        .pipe(imagemin({progressive: true, use: [pngquant()] }))
+        .pipe(gulp.dest(util.joinFormat(__dirname, 'dist', 'images')))      
+})
+
+//css
+// gulp.task('sass', () => {
+//   gulp.src('src/css/*.scss')
+//     .pipe(plumber())
+//     .pipe(sass())
+//     .pipe(autoprefixer())
+//     .pipe(gulp.dest('dist/css'))
+//     .pipe(browserSync.reload({stream:true}))
+//     .pipe(notify({ message: 'sass task complete'}));
+// })
 
 //html
 gulp.task('html',() => {
@@ -131,16 +162,16 @@ gulp.task('html',() => {
 });
 
 //images
-gulp.task('images', () => {
-    gulp.src(['src/images/*','src/images/**/*'])
-    .pipe(plumber())
-    .pipe(imagemin({
-       progressive: true,
-       use: [pngquant()] //使用pngquant来压缩png图片
-    }))
-    .pipe(gulp.dest('dist/images'))
-    .pipe(notify({ message: 'images task complete'}))
-});
+// gulp.task('images', () => {
+//     gulp.src(['src/images/*','src/images/**/*'])
+//     .pipe(plumber())
+//     .pipe(imagemin({
+//        progressive: true,
+//        use: [pngquant()] //使用pngquant来压缩png图片
+//     }))
+//     .pipe(gulp.dest('dist/images'))
+//     .pipe(notify({ message: 'images task complete'}))
+// });
 
 //js
 gulp.task('babel',() => {
