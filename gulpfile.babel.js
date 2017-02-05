@@ -3,7 +3,7 @@ import path from 'path';
 import util from './lib/util';
 import gulp from 'gulp';
 import babel from 'gulp-babel';
-import sass from 'gulp-sass';
+import sass from 'gulp-ruby-sass';
 import autoprefixer from 'gulp-autoprefixer';
 import notify from 'gulp-notify';
 import browserSync from 'browser-sync';
@@ -11,6 +11,11 @@ import imagemin from 'gulp-imagemin';
 import pngquant from 'imagemin-pngquant';
 import clean from 'gulp-clean';
 import plumber from 'gulp-plumber';
+import gulpJade from 'gulp-jade';
+import runSequence from 'run-sequence';
+import es from 'event-stream';
+import through from 'through2';
+import 'colors';
 
 
 // browserify
@@ -23,16 +28,83 @@ import babelify from 'babelify';
 var reload = browserSync.reload;
 
 gulp.task('test',() => {
-    console.log(util.vars.LOCAL_SERVER);
+    console.log(('11111').red);
 })
 
 //清除文件
 gulp.task('clean', () => {
-    gulp.src(['./dist'])
+    gulp.src([util.joinFormat(__dirname,'dist')])
         .pipe(clean({force:true}))
         .pipe(notify({ message: 'clean task complete'}))
 });
 
+//css
+gulp.task('css',() => {
+    
+    process.chdir(util.joinFormat(__dirname, 'src', 'components'));   //改变当前目录
+    
+    return sass('./', { style: 'nested'}) //, 'compass': true 默认是false,不引入项目sass配置
+        .pipe(filter('@(p-)*/*.css'))
+        .pipe(through.obj(function(file, enc, next){
+            var iCnt = file.contents.toString();
+            var pathReg = /(url\s*\(['"]?)([^'"]*?)(['"]?\s*\))/ig;
+            var pathReg2 = /(src\s*=\s*['"])([^'" ]*?)(['"])/ig;
+            var dirname = util.joinFormat(__dirname, 'src', 'css');
+
+            var replaceHandle = function(str, $1, $2, $3){
+                var iPath = $2,
+                    rPath = '';
+
+                if(iPath.match(/^(about:|data:)/)){
+                    return str;
+                }
+
+                var fDirname = path.dirname(path.relative(dirname, file.path));
+                rPath = path.join(fDirname, iPath)
+                    .replace(/\\+/g,'/')
+                    .replace(/\/+/, '/')
+                    ;
+                if(fs.existsSync(util.joinFormat(dirname, rPath).replace(/\?.*?$/g,''))){
+                    return $1 + rPath + $3;
+
+                } else {
+                    console.log(([
+                        '',
+                        '[error] css url replace error!',
+                        file.history,
+                        '[' + rPath + '] is not found!'].join("\n")
+                    ).yellow);
+                    return str;
+                }
+
+            };
+
+
+            iCnt = iCnt
+                .replace(pathReg, replaceHandle)
+                .replace(pathReg2, replaceHandle);
+
+            file.contents = new Buffer(iCnt, 'utf-8');
+            this.push(file);
+            next();
+        }))
+        .pipe(rename(function(path){
+            path.dirname = '';
+            path.basename = path.basename.replace(/^p-/,'');
+        }))
+        .pipe(gulp.dest('../css/'))
+        // 替换全局 图片
+        .pipe(replacePath(
+            util.joinFormat(
+                path.relative(
+                    path.join(__dirname, 'src', 'css'),
+                    path.join(__dirname, 'src', 'components')
+                )
+            ),
+            util.joinFormat(iConfig.dest.hostname, iConfig.dest.path.images, 'globalcomponents')
+        ))  
+        .pipe(gulp.dest(util.joinFormat(__dirname, 'dist', 'css')))
+})
 
 //css
 gulp.task('sass', () => {
