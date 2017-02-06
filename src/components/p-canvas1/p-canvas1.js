@@ -5,6 +5,8 @@ require(['jQuery'],function(){
    var centerX = canvas.width / 2;
    var centerY = canvas.height / 2;
    var rad = Math.PI * 2 / 100; //将360度分成100份，那么每一份就是rad度
+   var requestId = null;
+   var speed = 0.1;
 
 
    //动态的圈
@@ -44,12 +46,22 @@ require(['jQuery'],function(){
    }
 
 
-   //显示
-   (function drawFrame(speed){
-   	   context.clearRect(0, 0, canvas.with, canvas.height);
+   //显示  
+   function drawFrame(){
+   	   var value = 15; 
+   	   requestId = window.requestAnimationFrame(drawFrame);
+   	   context.clearRect(0, 0, canvas.width, canvas.height);
    	   whiteCircle();
    	   showText(speed);
    	   blueCircle(speed);
-   })(12);
+   	   if(speed >= value){
+   	   	  speed = value; 
+          window.cancelAnimationFrame(requestId);
+          return false;
+   	   }
+   	   speed += 0.5;      
+   };
+
+   drawFrame();
 
 })
