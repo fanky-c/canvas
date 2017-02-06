@@ -24,9 +24,13 @@ import rename from 'gulp-rename'; // rename the files
 import concat from 'gulp-concat'; // concat the files into single file
 import replacePath from 'gulp-replace-path';
 import inlinesource from 'gulp-inline-source';
+import requirejsOptimize from 'gulp-requirejs-optimize';
 import gulpOpen from 'gulp-open';
 import connect from 'gulp-connect';
 import livereload from 'gulp-livereload'; 
+import minifycss from 'gulp-minify-css';
+import jshint from 'gulp-jshint'; 
+import uglify from 'gulp-uglify'; 
 import 'colors';
 
 
@@ -208,6 +212,9 @@ gulp.task('css', () => {
         ))
         .pipe(replacePath('../images', util.joinFormat(hostname, 'images')))
         .pipe(replacePath('../components', util.joinFormat(hostname, 'images', 'components')))         
+        .pipe(minifycss({
+            compatibility: 'ie7'
+        }))
         .pipe(gulp.dest(util.joinFormat(__dirname, 'dist', 'css')))
         .pipe(livereload({quiet: true}));
 })
@@ -246,8 +253,46 @@ gulp.task('images-img', () => {
 
 
 //js
-gulp.task('js', () =>{
+gulp.task('js', () => { 
+    let rjsFilter = null;
+    let jsStream = null; 
 
+    /* requirejs 主模块列表 & 页面js [start] */
+     rjsFilter = filter(function (file) {
+            var result = /([pj]\-[a-zA-Z0-9_]*)[\\\/]([pj]\-[a-zA-Z0-9_]*)\.js$/.test(file.path);
+            if(result){
+                file.base = util.joinFormat(file.path.replace(/([pj]\-[a-zA-Z0-9_]*)\.js$/, ''));
+            }
+            return result;
+        });
+    /* requirejs 主模块列表 & 页面js [end] */
+
+        // jsTask
+         jsStream = gulp.src(path.join(__dirname, 'src', 'components/**/*.js'))
+            .pipe(plumber())
+            .pipe(jshint.reporter('default'))
+            .pipe(rjsFilter)
+            .pipe(jshint())
+            /* 合并主文件中通过 requirejs 引入的模块 [start] */
+            .pipe(requirejsOptimize({
+                optimize: 'none',
+                mainConfigFile: util.joinFormat(__dirname, 'src', 'js/rConfig/rConfig.js')
+            }))
+            .pipe(uglify())
+            .pipe(rename(function(path){                
+                path.basename = path.basename.replace(/^[pj]-/g,'');
+                path.dirname = '';
+            }))
+            .pipe(gulp.dest(util.joinFormat(__dirname, 'dist', 'js')))
+            .pipe(livereload({quiet: true}));
+
+        // js lib Task
+        var jsLibStream = gulp.src(util.joinFormat(__dirname, 'src', 'js/lib/**/*.js'))
+            .pipe(plumber())
+            .pipe(uglify())
+            .pipe(gulp.dest(util.joinFormat('dist', 'js/lib')));
+
+    return es.concat.apply(es, [jsStream, jsLibStream]);
 })
 
 
@@ -321,97 +366,61 @@ gulp.task('watchAll', () => {
 })
 
 
-//css
-// gulp.task('sass', () => {
-//   gulp.src('src/css/*.scss')
+
+
+// //js
+// gulp.task('babel',() => {
+//   gulp.src('src/js/*.js')
 //     .pipe(plumber())
-//     .pipe(sass())
-//     .pipe(autoprefixer())
-//     .pipe(gulp.dest('dist/css'))
-//     .pipe(browserSync.reload({stream:true}))
-//     .pipe(notify({ message: 'sass task complete'}));
+//     .pipe(babel())       
+//     .pipe(gulp.dest('dist/js'))
+//     .pipe(notify({ message: 'babel task complete' }));
 // })
 
-//html
-// gulp.task('html',() => {
-//    gulp.src('src/html/*.html')
-//    .pipe(plumber())
-//    .pipe(gulp.dest('dist/html'))
-//    .pipe(notify({ message: 'html task complete' }));
-// });
+// gulp.task('js-watch', ['babel'], browserSync.reload);
 
-//images
-// gulp.task('images', () => {
-//     gulp.src(['src/images/*','src/images/**/*'])
-//     .pipe(plumber())
-//     .pipe(imagemin({
-//        progressive: true,
-//        use: [pngquant()] //使用pngquant来压缩png图片
-//     }))
-//     .pipe(gulp.dest('dist/images'))
-//     .pipe(notify({ message: 'images task complete'}))
-// });
-
-//js
-gulp.task('babel',() => {
-  gulp.src('src/js/*.js')
-    .pipe(plumber())
-    .pipe(babel())       
-    .pipe(gulp.dest('dist/js'))
-    .pipe(notify({ message: 'babel task complete' }));
-})
-
-gulp.task('js-watch', ['babel'], browserSync.reload);
-
-// set browserify task
-gulp.task('browserify',()=> {
-        return browserify({
-            entries: ['src/js/main.js'],          
-            // entries: ['src/js/main.js'
-            //            ,'src/js/foo.js'
-            //            ,'src/js/letAndConst.js'
-            //            ,'src/js/string.js'
-            //            ,'src/js/assignmentAndresolution.js'],
-            debug: true
-        })       
-        .transform("babelify", {presets: ["es2015"]})        
-        .bundle()
-        .on('error', function(err){
-          console.log(err.message);
-          this.emit('end');
-        })        
-        .pipe(source('bundle.js'))   //生成入口文件
-        .pipe(buffer())
-        .pipe(sourcemaps.init({loadMaps: true}))        
-        .pipe(sourcemaps.write({
-            includeContent: false,
-            sourceRoot: 'src'
-        }))      
-        .pipe(gulp.dest('dist/js'))
-        .pipe(notify({ message: 'browserify task complete' }));
-})
-
-
-// The static server
-gulp.task('serve', ['html','sass','images','babel'], () => {
-    browserSync.init({
-        server: {
-            baseDir: ['./dist']
-        },
-        port: 9998
-    });
-
-    gulp.watch("src/html/*.html").on('change', browserSync.reload);
-    gulp.watch('src/css/*.scss', ['sass']);
-    gulp.watch("src/js/*.js", ['js-watch']);
-});
-
-gulp.task('default', ['html','sass','images','babel','serve','browserify','watch']);
-
-// gulp.task('watch', () => {
-//     gulp.watch("src/html/*.html",['html']); 
-//     gulp.watch('src/css/app.scss',['sass']);
-//     gulp.watch('src/images/*.{jpg,png,gif}',['images']);
-//     gulp.watch('src/app.js', ['babel']);
-//     gulp.watch('src/js/*.js', ['browserify']);
+// // set browserify task
+// gulp.task('browserify',()=> {
+//         return browserify({
+//             entries: ['src/js/main.js'],          
+//             // entries: ['src/js/main.js'
+//             //            ,'src/js/foo.js'
+//             //            ,'src/js/letAndConst.js'
+//             //            ,'src/js/string.js'
+//             //            ,'src/js/assignmentAndresolution.js'],
+//             debug: true
+//         })       
+//         .transform("babelify", {presets: ["es2015"]})        
+//         .bundle()
+//         .on('error', function(err){
+//           console.log(err.message);
+//           this.emit('end');
+//         })        
+//         .pipe(source('bundle.js'))   //生成入口文件
+//         .pipe(buffer())
+//         .pipe(sourcemaps.init({loadMaps: true}))        
+//         .pipe(sourcemaps.write({
+//             includeContent: false,
+//             sourceRoot: 'src'
+//         }))      
+//         .pipe(gulp.dest('dist/js'))
+//         .pipe(notify({ message: 'browserify task complete' }));
 // })
+
+
+// // The static server
+// gulp.task('serve', ['html','sass','images','babel'], () => {
+//     browserSync.init({
+//         server: {
+//             baseDir: ['./dist']
+//         },
+//         port: 9998
+//     });
+
+//     gulp.watch("src/html/*.html").on('change', browserSync.reload);
+//     gulp.watch('src/css/*.scss', ['sass']);
+//     gulp.watch("src/js/*.js", ['js-watch']);
+// });
+
+// gulp.task('default', ['html','sass','images','babel','serve','browserify','watch']);
+
