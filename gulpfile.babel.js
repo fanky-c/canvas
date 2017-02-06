@@ -1,6 +1,7 @@
 'use strict';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 import querystring from 'querystring';
 import util from './lib/util';
 import gulp from 'gulp';
@@ -22,7 +23,10 @@ import filter from 'gulp-filter';
 import rename from 'gulp-rename'; // rename the files
 import concat from 'gulp-concat'; // concat the files into single file
 import replacePath from 'gulp-replace-path';
-import inlinesource from 'gulp-inline-source'; // requirejs optimizer which can combine all modules into the main js file
+import inlinesource from 'gulp-inline-source';
+import gulpOpen from 'gulp-open';
+import connect from 'gulp-connect';
+import livereload from 'gulp-livereload'; 
 import 'colors';
 
 
@@ -36,8 +40,8 @@ import babelify from 'babelify';
 var reload = browserSync.reload;
 var hostname = 'http://web.yystatic.com/project/group_act/2017spring/mobile';
 
-gulp.task('test',() => {
-    console.log(('11111').red);
+gulp.task('test',(done) => {
+    runSequence('html','images','css','js',done)
 })
 
 //清除文件
@@ -101,7 +105,8 @@ gulp.task('html', () => {
                 path.dirname = '';
             }))
             .pipe(prettify({indent_size: 4}))
-            .pipe(gulp.dest(util.joinFormat(__dirname, 'src', 'html')));                    
+            .pipe(gulp.dest(util.joinFormat(__dirname, 'src', 'html')))
+            .pipe(livereload({quiet: true}));                    
          
          events.push(tmplStream);  //template流
 
@@ -129,7 +134,8 @@ gulp.task('html', () => {
 
             .pipe(replacePath('../images', util.joinFormat(hostname, 'images')))
             .pipe(replacePath(/\.\.\/(components\/[pw]-\w+\/images)/g, util.joinFormat(hostname, 'images', '$1')))
-            .pipe(gulp.dest(util.joinFormat(__dirname, 'dist', 'html' )));
+            .pipe(gulp.dest(util.joinFormat(__dirname, 'dist', 'html' )))
+            .pipe(livereload({quiet: true}));
 
             events.push(htmlStream);  //html流
 
@@ -203,6 +209,7 @@ gulp.task('css', () => {
         .pipe(replacePath('../images', util.joinFormat(hostname, 'images')))
         .pipe(replacePath('../components', util.joinFormat(hostname, 'images', 'components')))         
         .pipe(gulp.dest(util.joinFormat(__dirname, 'dist', 'css')))
+        .pipe(livereload({quiet: true}));
 })
 
 
@@ -226,14 +233,93 @@ gulp.task('images-components', () => {
         .pipe(plumber())
         .pipe(imagemin({ progressive: true, use: [pngquant()]}))
         .pipe(gulp.dest( util.joinFormat(__dirname, 'dist', 'images', 'components')))
+        .pipe(livereload({quiet: true}));
 })
 
 gulp.task('images-img', () => {
     return gulp.src([util.joinFormat(__dirname, 'src', 'images/**/*.*')], {base: util.joinFormat(__dirname, 'src', 'images')})
         .pipe(filter(['**/*.jpg', '**/*.jpeg', '**/*.png', '**/*.bmp', '**/*.gif']))
         .pipe(imagemin({progressive: true, use: [pngquant()] }))
-        .pipe(gulp.dest(util.joinFormat(__dirname, 'dist', 'images')))      
+        .pipe(gulp.dest(util.joinFormat(__dirname, 'dist', 'images')))
+        .pipe(livereload({quiet: true}));      
 })
+
+
+//js
+gulp.task('js', () =>{
+
+})
+
+
+//watch
+gulp.task('watch', () => {
+    
+    livereload.listen();
+
+
+    gulp.watch([util.joinFormat(__dirname, 'src', '**/*.scss'),
+                util.joinFormat(__dirname, 'src', 'components/*.scss'),
+                util.joinFormat(__dirname, 'src', 'sass/*.scss')], ['css']);
+
+
+    gulp.watch([
+        util.joinFormat(__dirname, 'src', 'components/**/*.js'),
+        util.joinFormat(__dirname, 'src', 'js/lib/**/*.js')
+    ], ['js']);
+
+
+    gulp.watch([
+        util.joinFormat(__dirname, 'src', 'images/*.*'),
+        util.joinFormat(__dirname, 'src', 'components/**/images/*.*')
+    ], ['images']);
+
+    gulp.watch([
+        util.joinFormat(__dirname, 'src', 'components/**/*.jade'),
+        util.joinFormat(__dirname, 'src', 'templates/**/*.jade')
+    ], ['html']);
+
+})
+
+//server
+let host = {
+     path: util.joinFormat(__dirname, 'src'),
+     port: 3008,
+    //html: 'index.html'     
+};
+
+let browser = os.platform() === 'linux' ? 'Google chrome' : (
+              os.platform() === 'darwin' ? 'Google chrome' : (
+              os.platform() === 'win32' ? 'chrome' : 'firefox'));
+
+
+gulp.task('connect', () => {
+    connect.server({
+        root: host.path,
+        port: host.port,
+        livereload: true
+    });      
+});
+
+gulp.task('open', (done)=> {
+        gulp.src('')
+        .pipe(gulpOpen({
+            app: browser,
+            uri: 'http://localhost:'+ host.port
+            //uri: 'http://localhost:'+ host.port +'/html/'
+        }))
+        .on('end', done);
+});
+
+//all
+gulp.task('all',(done) => {
+    runSequence('html','images','css','js',done)
+})
+
+//dev
+gulp.task('watchAll', () => {
+      runSequence(['all'], 'watch','connect','open')
+})
+
 
 //css
 // gulp.task('sass', () => {
@@ -322,10 +408,10 @@ gulp.task('serve', ['html','sass','images','babel'], () => {
 
 gulp.task('default', ['html','sass','images','babel','serve','browserify','watch']);
 
-gulp.task('watch', () => {
-    gulp.watch("src/html/*.html",['html']); 
-    gulp.watch('src/css/app.scss',['sass']);
-    gulp.watch('src/images/*.{jpg,png,gif}',['images']);
-    gulp.watch('src/app.js', ['babel']);
-    gulp.watch('src/js/*.js', ['browserify']);
-})
+// gulp.task('watch', () => {
+//     gulp.watch("src/html/*.html",['html']); 
+//     gulp.watch('src/css/app.scss',['sass']);
+//     gulp.watch('src/images/*.{jpg,png,gif}',['images']);
+//     gulp.watch('src/app.js', ['babel']);
+//     gulp.watch('src/js/*.js', ['browserify']);
+// })
