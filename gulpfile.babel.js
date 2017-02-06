@@ -287,7 +287,7 @@ gulp.task('js', () => {
          jsLibStream = gulp.src(util.joinFormat(__dirname, 'src', 'js/lib/**/*.js'))
             .pipe(plumber())
             .pipe(uglify())
-            .pipe(gulp.dest(util.joinFormat('dist', 'js/lib')));
+            .pipe(gulp.dest(util.joinFormat(__dirname, 'dist', 'js/lib')));
 
     return es.concat.apply(es, [jsStream, jsLibStream]);
 })
@@ -304,10 +304,9 @@ gulp.task('watch', () => {
                 util.joinFormat(__dirname, 'src', 'sass/*.scss')], ['css']);
 
 
-    gulp.watch([
-        util.joinFormat(__dirname, 'src', 'components/**/*.js'),
-        util.joinFormat(__dirname, 'src', 'js/lib/**/*.js')
-    ], ['js']);
+    gulp.watch([util.joinFormat(__dirname, 'src', 'components/**/*.js'),
+                util.joinFormat(__dirname, 'src', 'js/lib/**/*.js')
+               ], ['js']);
 
 
     gulp.watch([

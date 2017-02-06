@@ -57,11 +57,4 @@ html, body {
   -webkit-overflow-scrolling: touch; }
 
 body {
-  background: white; }
-
-.div1 {
-  color: red;
-  border: 1px solid red; }
-
-.test {
-  background: url("../components/p-canvas1/images/test.jpg"); }
+  background: black; }
