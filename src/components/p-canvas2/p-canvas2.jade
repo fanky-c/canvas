@@ -1,0 +1,13 @@
+extends ../../templates/layout
+
+block title
+    | canvas--Matrix
+block head
+    link(rel="stylesheet", href="../../css/canvas1.css", type="text/css")
+
+block body     
+     canvas(id='canvas',width='500',height='500')
+         p you browser not support canvas!
+
+append script
+    script(src="../../js/lib/requirejs/require.js", data-main="./p-canvas2.js")          
