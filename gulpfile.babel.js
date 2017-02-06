@@ -1,6 +1,7 @@
 'use strict';
 import path from 'path';
 import fs from 'fs';
+import querystring from 'querystring';
 import util from './lib/util';
 import gulp from 'gulp';
 import babel from 'gulp-babel';
@@ -14,12 +15,14 @@ import clean from 'gulp-clean';
 import plumber from 'gulp-plumber';
 import gulpJade from 'gulp-jade';
 import runSequence from 'run-sequence';
+import prettify from 'gulp-prettify';
 import es from 'event-stream';
 import through from 'through2';
 import filter from 'gulp-filter';
 import rename from 'gulp-rename'; // rename the files
 import concat from 'gulp-concat'; // concat the files into single file
 import replacePath from 'gulp-replace-path';
+import inlinesource from 'gulp-inline-source'; // requirejs optimizer which can combine all modules into the main js file
 import 'colors';
 
 
@@ -44,8 +47,98 @@ gulp.task('clean', () => {
         .pipe(notify({ message: 'clean task complete'}))
 });
 
+//html
+gulp.task('html', () => {
+      let events = [];
+      let tmplStream = null;
+      let htmlStream = null;
+
+      tmplStream = gulp.src(util.joinFormat(__dirname,'src','components/@(p-)*/*.jade'))
+            .pipe(plumber())
+            .pipe(gulpJade({
+                pretty: true,
+                client: false
+            }))
+            .pipe(through.obj(function(file, enc, next){
+                var iCnt = file.contents.toString();
+                var pathReg = /(src|href|data-main|data-original)\s*=\s*(['"])([^'"]*)(["'])/ig;
+                // script 匹配
+                var scriptReg = /(<script[^>]*>)([\w\W]*?)(<\/script\>)/ig;
+                var dirname = util.joinFormat(__dirname, 'src', 'html');
+                iCnt = iCnt
+                    // 隔离 script 内容
+                    .replace(scriptReg, function(str, $1, $2, $3){
+                        return $1 + querystring.escape($2) + $3;
+                    })
+                    .replace(pathReg, function(str, $1, $2, $3, $4){
+                        var iPath = $3,
+                            rPath = '';
+
+                        if(iPath.match(/^(data:image|javascript:|#|http:|https:|\/)/) || !iPath){
+                            return str;
+                        }
+
+
+                        var fDirname = path.dirname(path.relative(dirname, file.path));
+                        rPath = util.joinFormat(fDirname, iPath)
+                            .replace(/\\+/g,'/')
+                            .replace(/\/+/, '/')
+                            ;
+
+                        return $1 + '=' + $2 + rPath + $4;
+                    })
+                    // 取消隔离 script 内容
+                    .replace(scriptReg, function(str, $1, $2, $3){
+                        return $1 + querystring.unescape($2) + $3;
+                    });
+
+                file.contents = new Buffer(iCnt, 'utf-8');
+                this.push(file);
+                next();
+            }))
+            .pipe(rename(function(path){
+                path.basename = path.basename.replace(/^p-/g,'');
+                path.dirname = '';
+            }))
+            .pipe(prettify({indent_size: 4}))
+            .pipe(gulp.dest(util.joinFormat(__dirname, 'src', 'html')));                    
+         
+         events.push(tmplStream);  //template流
+
+         htmlStream = gulp.src( util.joinFormat(__dirname, 'src', 'html/*.html'))
+            .pipe(plumber())
+            //内嵌js
+            .pipe(inlinesource())
+            // 删除requirejs的配置文件引用
+            .pipe(replacePath(/<script [^<]*local-usage\><\/script>/g, ''))
+
+            // 替换全局 图片
+            .pipe(replacePath(
+                util.joinFormat(
+                    path.relative(
+                        path.join(__dirname, 'src', 'html'),
+                        path.join(__dirname, 'components')
+                    )
+                ),
+                util.joinFormat(hostname, 'images', 'globalcomponents')
+            ))
+            .pipe(replacePath('../js/lib', util.joinFormat(hostname, 'js/lib')))
+            .pipe(replacePath(/\.\.\/components\/p-\w+\/p-(\w+).js/g, util.joinFormat(hostname, 'js', '/$1.js')))
+
+            .pipe(replacePath('../css', util.joinFormat(hostname, 'css')))
+
+            .pipe(replacePath('../images', util.joinFormat(hostname, 'images')))
+            .pipe(replacePath(/\.\.\/(components\/[pw]-\w+\/images)/g, util.joinFormat(hostname, 'images', '$1')))
+            .pipe(gulp.dest(util.joinFormat(__dirname, 'dist', 'html' )));
+
+            events.push(htmlStream);  //html流
+
+            return es.concat.apply(es, events);   //concat --> merge       
+
+})
+
 //css
-gulp.task('css',() => {
+gulp.task('css', () => {
     
     process.chdir(util.joinFormat(__dirname, 'src', 'components'));   //改变当前目录
     
@@ -154,12 +247,12 @@ gulp.task('images-img', () => {
 // })
 
 //html
-gulp.task('html',() => {
-   gulp.src('src/html/*.html')
-   .pipe(plumber())
-   .pipe(gulp.dest('dist/html'))
-   .pipe(notify({ message: 'html task complete' }));
-});
+// gulp.task('html',() => {
+//    gulp.src('src/html/*.html')
+//    .pipe(plumber())
+//    .pipe(gulp.dest('dist/html'))
+//    .pipe(notify({ message: 'html task complete' }));
+// });
 
 //images
 // gulp.task('images', () => {
