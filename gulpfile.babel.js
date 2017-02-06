@@ -44,10 +44,6 @@ import babelify from 'babelify';
 var reload = browserSync.reload;
 var hostname = 'http://web.yystatic.com/project/group_act/2017spring/mobile';
 
-gulp.task('test',(done) => {
-    runSequence('html','images','css','js',done)
-})
-
 //清除文件
 gulp.task('clean', () => {
     gulp.src([util.joinFormat(__dirname,'dist')])
@@ -256,6 +252,7 @@ gulp.task('images-img', () => {
 gulp.task('js', () => { 
     let rjsFilter = null;
     let jsStream = null; 
+    let jsLibStream = null; 
 
     /* requirejs 主模块列表 & 页面js [start] */
      rjsFilter = filter(function (file) {
@@ -287,7 +284,7 @@ gulp.task('js', () => {
             .pipe(livereload({quiet: true}));
 
         // js lib Task
-        var jsLibStream = gulp.src(util.joinFormat(__dirname, 'src', 'js/lib/**/*.js'))
+         jsLibStream = gulp.src(util.joinFormat(__dirname, 'src', 'js/lib/**/*.js'))
             .pipe(plumber())
             .pipe(uglify())
             .pipe(gulp.dest(util.joinFormat('dist', 'js/lib')));
@@ -357,7 +354,7 @@ gulp.task('open', (done)=> {
 
 //all
 gulp.task('all',(done) => {
-    runSequence('html','images','css','js',done)
+    runSequence('js','css','images','html',done)
 })
 
 //dev
