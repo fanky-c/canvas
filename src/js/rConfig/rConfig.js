@@ -14,7 +14,8 @@ var require = {
         yyBridge:'../../js/lib/yyBridge/WAJavascriptBridge',
         yymobile:'../../js/lib/yymobile/yymobile_api_v1.2.12',
         reportPhoneEvent2:'../../js/lib/reportPhoneEvent/mPublic_hiido.v1.0.2',
-        iscroll:'../../js/lib/iscroll/iscroll'        
+        iscroll:'../../js/lib/iscroll/iscroll',
+        util:'../../js/lib/util/util'        
     },
     shim: {
         jQuery: {
@@ -53,6 +54,9 @@ var require = {
         iscroll: {
             deps:['jQuery'],
             exports:'iscroll'
+        },
+        util:{
+              exports:'util'
         }
     }
 };

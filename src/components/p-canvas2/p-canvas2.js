@@ -1,4 +1,4 @@
-require(['jQuery'],function(){
+require(['util'],function(){
    
    var canvas = document.getElementById('canvas');
    var context = canvas.getContext('2d');
@@ -48,11 +48,24 @@ require(['jQuery'],function(){
         draw();
    })();
 
-
+   //缩放
    window.addEventListener('resize',function(){
          w = canvas.width = window.innerWidth;
          h = canvas.height = window.innerHeight;
-   })
+   });
 
+
+
+   var mouse = util.captureMouse(canvas);
+   var mouse1 = util.captureCanvasMouse(canvas);
+   var touch = util.captureTouch(canvas);
+   canvas.addEventListener('mousedown',function(event){
+         console.log('x:'+ mouse.x,'y:'+mouse.y)
+         console.log('x1:'+ mouse1.x,'y1:'+mouse1.y)
+   },false)
+
+   canvas.addEventListener('touchmove',function(){
+        console.log('touchx:'+ touch.x,'touchy:'+touch.y)
+   },false)
 
 })
