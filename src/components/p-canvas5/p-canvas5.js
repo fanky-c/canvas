@@ -22,5 +22,31 @@ require(['util','canvasArror','canvasBall'],function(util, arror, ball){
 
 
 
-   //
+   //速度合成与分解
+   var ball2 = new Ball(canvas.width /  5, canvas.height / 5);
+   var speed = 6;
+   var angle = 30;
+
+   (function drawFrame(){
+        window.requestAnimationFrame(drawFrame, canvas);
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        //分解力
+        var vx = Math.cos(angle * Math.PI / 180) * speed;
+        var vy = Math.sin(angle * Math.PI / 180) * speed;
+
+        ball2.x += vx;
+        ball2.y += vy;
+        
+        if(ball2.x > canvas.width) ball2.x =  canvas.width / 5;
+        if(ball2.y > canvas.height) ball2.y =  canvas.height / 5;
+
+        ball2.draw(context);
+   })();
+
+
+
+   //鼠标跟随
+   
+   
 })
