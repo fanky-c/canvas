@@ -47,6 +47,34 @@ require(['util','canvasArror','canvasBall'],function(util, arror, ball){
 
 
    //鼠标跟随
+   var angle2 = 0, speed2 = 2;
+   var mouse = util.captureMouse(canvas);
+   var arror = new arror();
+   arror.x = canvas.width / 2;
+   arror.y = canvas.height / 2;
+
+
+   (function drawFrame(){
+       window.requestAnimationFrame(drawFrame, canvas);
+       context.clearRect(0, 0, canvas.width, canvas.height);
+
+       var dx = mouse.x - arror.x;
+       var dy = mouse.y - arror.y;
+
+       angle2 =  Math.atan2(dy, dx);
+
+       arror.rotation = angle2;
+
+       var vx = Math.cos(angle2) * speed2;
+       var vy = Math.sin(angle2) * speed2;
+
+       arror.x += vx;
+       arror.y += vy;
+
+
+       arror.draw(context);
+   })();
+
    
    
 })
