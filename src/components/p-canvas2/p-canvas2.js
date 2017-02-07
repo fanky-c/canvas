@@ -1,4 +1,4 @@
-require(['util'],function(){
+require(['util','canvasArror'],function(){
    
    var canvas = document.getElementById('canvas');
    var context = canvas.getContext('2d');

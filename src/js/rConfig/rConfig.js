@@ -15,7 +15,9 @@ var require = {
         yymobile:'../../js/lib/yymobile/yymobile_api_v1.2.12',
         reportPhoneEvent2:'../../js/lib/reportPhoneEvent/mPublic_hiido.v1.0.2',
         iscroll:'../../js/lib/iscroll/iscroll',
-        util:'../../js/lib/util/util'        
+        util:'../../js/lib/util/util',
+        canvasArror:'../../js/lib/canvasArror/canvasArror',
+        canvasBall:'../../js/lib/canvasBall/canvasBall'         
     },
     shim: {
         jQuery: {
@@ -57,6 +59,12 @@ var require = {
         },
         util:{
               exports:'util'
+        },
+        canvasArror:{
+              exports:'Arror'
+        },
+        canvasBall:{
+               exports:'Ball'
         }
     }
 };
