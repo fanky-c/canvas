@@ -24,7 +24,6 @@ Ship.prototype = {
           context.lineTo(10, 0);
           context.closePath();
           context.stroke();
-          context.restore();
 
           if(this.showFrame == true){
              context.save();
@@ -36,5 +35,7 @@ Ship.prototype = {
              context.stroke();
              context.restore();
           }
+
+         context.restore();     
 	  }
 }
