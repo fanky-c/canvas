@@ -75,6 +75,25 @@ require(['util','canvasArror','canvasBall'],function(util, arror, ball){
        arror.draw(context);
    })();
 
+
+
+   //第二种鼠标跟随
+   // var vr = 30;
+   // var speed3 = 2;
+   // (function drawFrame(){
+   //       window.requestAnimationFrame(drawFrame, canvas);
+   //       context.clearRect(0, 0, canvas.width, canvas.height);
+
+   //       //通过rotation改变角度
+   //       arror.rotation = vr * Math.PI / 180;
+
+   //       //分解
+   //       arror.x += Math.cos(arror.rotation) * speed3;
+   //       arror.y += Math.sin(arror.rotation) * speed3;
+
+   //       arror.draw(context);
+   // })()
+
    
    
 })
