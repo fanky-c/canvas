@@ -17,7 +17,8 @@ var require = {
         iscroll:'../../js/lib/iscroll/iscroll',
         util:'../../js/lib/util/util',
         canvasArror:'../../js/lib/canvasArror/canvasArror',
-        canvasBall:'../../js/lib/canvasBall/canvasBall'         
+        canvasBall:'../../js/lib/canvasBall/canvasBall',
+        canvasShip:'../../js/lib/canvasShip/canvasShip'         
     },
     shim: {
         jQuery: {
@@ -65,6 +66,9 @@ var require = {
         },
         canvasBall:{
                exports:'Ball'
+        },
+        canvasShip:{
+              exports:'Ship'
         }
     }
 };

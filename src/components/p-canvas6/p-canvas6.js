@@ -1,5 +1,6 @@
-require(['util','canvasArror','canvasBall'],function(util, arror, ball){
+require(['util','canvasArror','canvasBall','canvasShip'],function(util, arror, ball, ship){
    var Ball = ball;
+   var Ship = ship;
    var canvas = document.getElementById('canvas');
    var context = canvas.getContext('2d');
    var centerX = canvas.width / 2;
@@ -31,5 +32,8 @@ require(['util','canvasArror','canvasBall'],function(util, arror, ball){
 
        checkGround(ball1);
        ball1.draw(context);
-   })()        
+   })()
+
+
+   var ship1 = new Ship();        
 })
