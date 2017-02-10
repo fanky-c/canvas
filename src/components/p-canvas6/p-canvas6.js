@@ -49,7 +49,7 @@ require(['util','canvasArror','canvasBall','canvasShip'],function(util, arror, b
 
        //控制方向
        window.addEventListener('keydown', function(event){
-        console.log(event.keyCode);
+           console.log(event.keyCode);
            switch(event.keyCode){
                 case 37:
                     vr = -3;
