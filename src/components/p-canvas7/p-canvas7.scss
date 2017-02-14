@@ -1,0 +1,13 @@
+@charset 'UTF-8';
+@import '../../sass/base/_mixin';
+@import '../../sass/base/_mobile';
+@import '../../sass/base/commons';
+
+body{
+	  background:  black;
+}
+
+canvas{
+	  margin: 0 auto;
+	  display: block;
+}
