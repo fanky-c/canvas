@@ -15,11 +15,12 @@ require(['util','canvasArror','canvasBall','canvasShip'],function(util, arror, b
     //定义小球
     for(var i=0; i<nums; i++){
        var size = Math.random() * 20 + 5;
-       var color = Math.random() * (0xffffff);
+       //我们知道hex颜色值是从#000000到#ffffff(parseInt("0xffffff",16).toString(10) == 16777215)
+       var color = '#' +Math.floor(Math.random() * 16777215).toString(16);
        var ball = new Ball(size);
        
        //balls.x = size;
-       //ball.color = color;
+       ball.color = color;
        ball.id = 'ball' + i;
        ball.radius = Math.random()* 30 + 10;
        ball.x = Math.random() * canWidth;
