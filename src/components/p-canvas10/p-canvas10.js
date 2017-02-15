@@ -70,7 +70,8 @@ require(['util','canvasArror','canvasBall','canvasShip'],function(util, arror, b
                 ball.y = ball.radius;
            }           
    }
-
+   
+   //开启定时器
    (function drawFrame(){
         window.requestAnimationFrame(drawFrame, canvas);
         context.clearRect(0, 0, canvas.width, canvas.height);
