@@ -6,14 +6,15 @@ require(['util','canvasArror','canvasBall','canvasShip'],function(util, arror, b
    var centerX = canvas.width / 2;
    var centerY = canvas.height / 2;
    var mouse = util.captureMouse(canvas);
-   var isMove = false;
-   var ball = new Ball();
-   var w = 0, h = 0;
-    
-       ball.x = canvas.width / 2;
-       ball.y = canvas.height / 2;
-       ball.draw(context);
-  
+   var isMouseDown = false;
+   var ball = new Ball(),
+       w = 0, h = 0;
+       vx = 0, vy = 0, gravity = 0.2, bounce = -0.8;
+
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height / 2;
+
+
   //事件监听
    canvas.addEventListener('mousedown',function(event){
          
@@ -25,6 +26,7 @@ require(['util','canvasArror','canvasBall','canvasShip'],function(util, arror, b
              w = mouse.x - ball.x;
              h = mouse.y - ball.y;
 
+             isMouseDown = true;
 
              canvas.addEventListener('mouseup',onMouseUp,false);
              canvas.addEventListener('mousemove',onMouseMove,false);     
@@ -33,6 +35,7 @@ require(['util','canvasArror','canvasBall','canvasShip'],function(util, arror, b
 
    //mouseup事件
    function onMouseUp(event){
+       isMouseDown = false;
        canvas.removeEventListener('mouseup',onMouseUp,false);
        canvas.removeEventListener('mousemove',onMouseMove,false);
    }    
@@ -43,11 +46,40 @@ require(['util','canvasArror','canvasBall','canvasShip'],function(util, arror, b
         ball.y = mouse.y - h;
    }
 
-   (function drawFrame(){
-       window.requestAnimationFrame(drawFrame, canvas);
-       context.clearRect(0, 0, canvas.width, canvas.height);
+   //让小球运动
+   function moveAndBoud(){
+           ball.x += vx;
+           vy += gravity;
+           ball.y += vy;
 
-       ball.draw(context);
+
+           //边界检测
+           if(ball.x + ball.radius > canvas.width){
+                vx *= bounce;
+                ball.x = canvas.width - ball.radius;
+           }else if(ball.x - ball.radius < 0){
+                vx *= bounce;
+                ball.x = ball.radius;
+           }
+
+           if(ball.y + ball.radius > canvas.height){
+                vy *= bounce;
+                ball.y = canvas.height - ball.radius;
+           }else if(ball.y - ball.radius < 0){
+                vy *= bounce;
+                ball.y = ball.radius;
+           }           
+   }
+
+   (function drawFrame(){
+        window.requestAnimationFrame(drawFrame, canvas);
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        if(!isMouseDown){
+            moveAndBoud();    
+        }
+
+        ball.draw(context);
    })()
 
 
