@@ -28,5 +28,14 @@ Ball.prototype = {
            context.fill();
            context.stroke();
            context.restore();
-	   }
+	   },
+     getBounds: function(){
+         var she = this;
+         return {
+              x: she.x - she.radius,
+              y: she.y - she.radius,
+              width: she.radius * 2,
+              height: she.radius * 2
+         }
+     }
 }

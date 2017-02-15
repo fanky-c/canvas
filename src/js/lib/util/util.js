@@ -95,6 +95,17 @@ util.captureTouch = function(element){
    return touch;
 }
 
+
+//判断元素是否在 x\y均为鼠标位置
+util.containsPoint = function(rect, x, y){
+     return !(
+           x < rect.x 
+           || x > rect.x + rect.width
+           || y < rect.y 
+           || y > rect.y + rect.height 
+      )
+}
+
 //兼容requestAnimationFrame
 if(!window.requestAnimationFrame){
     window.requestAnimationFrame = 
