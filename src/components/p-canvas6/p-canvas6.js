@@ -7,15 +7,14 @@ require(['util','canvasArror','canvasBall','canvasShip'],function(util, arror, b
    var centerY = canvas.height / 2;
 
   
-   var ball1 = new Ball();
-       ball1.x = canvas.width / 2,
-       ball1.y = canvas.height /2 - 200;
 
-   var vy = 0, //初始速度
-       gravity = 0.2, //重力加速度
-       bounce = -0.8; //反弹系数
-
-  //检测碰撞
+  //检测Y轴碰撞
+   // var ball1 = new Ball();
+   //     ball1.x = canvas.width / 2,
+   //     ball1.y = canvas.height /2 - 200;
+   // var vy = 0, //初始速度
+   //     gravity = 0.2, //重力加速度
+   //     bounce = -0.8; //反弹系数
    // function checkGround(ball){
    //       if(ball.y + ball.radius >= canvas.height){
    //            ball.y = canvas.height - ball.radius;
@@ -33,6 +32,47 @@ require(['util','canvasArror','canvasBall','canvasShip'],function(util, arror, b
    //     checkGround(ball1);
    //     ball1.draw(context);
    // })()
+
+   
+   //检测X、Y轴碰撞
+   // var vx = Math.random() * 30 - 5;
+   // var vy = Math.random() * 30 - 4;
+   // var ball2 = new Ball();
+
+   //     ball2.x = canvas.width / 2;
+   //     ball2.y = canvas.height/ 2;
+
+   //     ball2.draw(context);
+
+
+   //  (function drawFrame(){
+   //      window.requestAnimationFrame(drawFrame, canvas);
+   //      context.clearRect(0, 0, canvas.width, canvas.height);
+
+   //      ball2.x += vx;
+   //      ball2.y += vy;
+
+   //      //检测
+   //      if(ball2.x + ball2.radius > canvas.width){
+   //         ball2.x = canvas.width - ball2.radius;
+   //         vx *= -1;
+   //      }else if(ball2.x - ball2.radius < 0){
+   //         ball2.x = ball2.radius;
+   //         vx *= -1;
+   //      }
+
+   //      if(ball2.y + ball2.radius > canvas.height){
+   //          ball2.y = canvas.height - ball2.radius;
+   //          vy *= -1;
+   //      }else if(ball2.y - ball2.radius < 0){
+   //          ball2.y = ball2.radius;
+   //          vy *= -1;
+   //      }
+
+   //      ball2.draw(context);
+   //  })()
+
+
 
    //飞船
    var ship1 = new Ship();
