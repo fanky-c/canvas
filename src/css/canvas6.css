@@ -60,5 +60,6 @@ body {
   background: black; }
 
 canvas {
-  margin: 0 auto;
-  display: block; }
+  margin: 50px auto;
+  display: block;
+  border: 1px solid #ccc; }
