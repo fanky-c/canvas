@@ -3,12 +3,17 @@ define(['particle'],function(Particle){
 	    this.x = x;
 	    this.y = y;
 	    this.text = text;
+	    this.W = W;
+	    this.H = H;	    	    
 	    this.placement = [];
 	}
 
 	Shape.prototype = {
 		   constructor: Shape,
-		   getValue: function(){
+		   getValue: function(context){
+		   	   var W = this.W;
+		   	   var H = this.H;
+
 		   	   context.textAlign = 'center';
 		   	   context.font = this.size + 'px arial';
 		   	   context.fillText(this.text, this.x, this.y);
