@@ -18,7 +18,10 @@ var require = {
         util:'../../js/lib/util/util',
         canvasArror:'../../js/lib/canvasArror/canvasArror',
         canvasBall:'../../js/lib/canvasBall/canvasBall',
-        canvasShip:'../../js/lib/canvasShip/canvasShip'         
+        canvasShip:'../../js/lib/canvasShip/canvasShip',
+        shape:'../../js/lib/shape/shape',
+        utils:'../../js/lib/utils/utils',
+        particle:'../../js/lib/particle/particle',         
     },
     shim: {
         jQuery: {
@@ -69,7 +72,16 @@ var require = {
         },
         canvasShip:{
               exports:'Ship'
-        }
+        },
+        utils:{
+              exports:'utils'
+        },
+        // shape:{
+        //       exports:'Shape'
+        // },        
+        // particle:{
+        //       exports:'particle'
+        // }        
     }
 };
 
