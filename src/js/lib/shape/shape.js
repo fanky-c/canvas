@@ -1,5 +1,5 @@
 define(['particle'],function(Particle){
-	function Shape(x, y, text){
+	function Shape(x, y, text, W, H){
 	    this.x = x;
 	    this.y = y;
 	    this.text = text;
