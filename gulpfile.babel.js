@@ -51,6 +51,12 @@ gulp.task('clean', () => {
         .pipe(notify({ message: 'clean task complete'}))
 });
 
+
+
+gulp.task('ip',function(){
+      console.log(util.vars.LOCAL_SERVER);
+})
+
 //html
 gulp.task('html', () => {
       let events = [];
