@@ -3,7 +3,7 @@ require(['shape'],function(Shape){
       var canvas = document.getElementById('canvas');
       var context = canvas.getContext('2d');
       var W = canvas.width = window.innerWidth;
-      var H = canvas.height = window.innnerHeight;
+      var H = canvas.height = window.innerHeight;
       var gridX = 7, gridY = 7;
 
       type = 'ball';
@@ -28,7 +28,8 @@ require(['shape'],function(Shape){
       durVal = parseFloat(duration.value);
       spdVal = parseFloat(speed.value);
       radVal = parseFloat(radius.value);
-      resVal = parseFloat(resolution.value);    
+      resVal = parseFloat(resolution.value);  
+
 
       var word = new Shape(W / 2, H / 2, message.value, W, H);
       
@@ -40,10 +41,11 @@ require(['shape'],function(Shape){
          gridY = parseFloat(resolution.value);
          word.placement = [];
          word.text = message.value;
-         word.getValue();
+         word.getValue(context);
       }
 
       function changeV() {
+         alert('changeV')
          graVal = parseFloat(gravity.value);
          durVal = parseFloat(duration.value);
          spdVal = parseFloat(speed.value);
@@ -61,43 +63,43 @@ require(['shape'],function(Shape){
       }())
 
 
-   //resize
-   function resize() {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-   }
+      /**
+       * 操作侧边栏
+       * @return {[type]} [description]
+       */
+      function slidebar(){
+            var btn = document.getElementById("btn");
+            var control = document.getElementById("control");
+            
 
-   window.addEventListener('resize', resize, false);
+            //打开操作栏板
+            btn.addEventListener('click',function(){
+                  control.classList.toggle('slide');
+            },false);
+
+
+            var ball = document.getElementById('ball');
+            var rect = document.getElementById('rect');
+            function chose(particleName){
+                particleName.addEventListener('click',function(){
+                      this.style.backgroundColor = 'orange';
+                      (particleName == ball ? rect : ball).style.backgroundColor = 'rgba(0, 0, 0, 0)';
+                      type = (type == 'ball' ? 'rect' : 'ball');
+                      change();  
+                },false)
+            }
+
+            chose(ball);
+            chose(rect);
+      } 
+
+
+       //resize
+       function resize() {
+          W = canvas.width = window.innerWidth;
+          H = canvas.height = window.innerHeight;
+       }
+
+     window.addEventListener('resize', resize, false);
 
 })
-
-
-/**
- * 操作侧边栏
- * @return {[type]} [description]
- */
-function slidebar(){
-      var btn = document.getElementById("btn");
-      var control = document.getElementById("control");
-      
-
-      //打开操作栏板
-      btn.addEventListener('click',function(){
-            control.classList.toggle('slide');
-      },false);
-
-
-      var ball = document.getElementById('ball');
-      var rect = document.getElementById('rect');
-      function chose(particleName){
-          particleName.addEventListener('click',function(){
-                this.style.backgroundColor = 'orange';
-                (particleName == ball ? rect : ball).style.backgroundColor = 'rgba(0, 0, 0, 0)';
-                type = (type == 'ball' ? 'rect' : 'ball');
-                change();  
-          },false)
-      }
-
-      chose(ball);
-      chose(rect);
-} 

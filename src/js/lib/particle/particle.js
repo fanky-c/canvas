@@ -1,6 +1,6 @@
 define(['utils'],function(utils){
 	
-	function Particle(x, y, type) {
+	function Particle(x, y, type, context) {
 	  this.radius = 1.1;
 	  this.futurRadius = utils.randomInt(radVal, radVal+3); //[1.1,5.1]
 	  
@@ -18,6 +18,7 @@ define(['utils'],function(utils){
 	  this.friction = .99;
 	  this.gravity = graVal;
 	  this.color = colors[Math.floor(Math.random() * colors.length)];
+	  this.context = context;
 
 	  this.getSpeed = function() {
 	    return Math.sqrt(this.vx * this.vx + this.vy * this.vy);
