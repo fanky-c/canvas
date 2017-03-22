@@ -4,7 +4,6 @@ require(['shape'],function(Shape){
       var context = canvas.getContext('2d');
       var W = canvas.width = window.innerWidth;
       var H = canvas.height = window.innerHeight;
-      var gridX = 7, gridY = 7;
 
       type = 'ball';
       colors = [
@@ -43,6 +42,8 @@ require(['shape'],function(Shape){
          word.text = message.value;
          word.getValue(context);
       }
+
+      document.getElementById('message').onchange = change;
 
       function changeV() {
          alert('changeV')
