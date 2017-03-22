@@ -43,15 +43,21 @@ require(['shape'],function(Shape){
          word.getValue(context);
       }
 
-      document.getElementById('message').onchange = change;
+      message.onchange = change;
 
       function changeV() {
-         alert('changeV')
          graVal = parseFloat(gravity.value);
          durVal = parseFloat(duration.value);
          spdVal = parseFloat(speed.value);
          radVal = parseFloat(radius.value);
       }
+
+      gravity.onchange = changeV;
+      duration.onchange = changeV;
+      speed.onchange = changeV;
+      radius.onchange = changeV;
+      resolution.onchange = changeV;
+      
 
 
       (function drawFrame() {
