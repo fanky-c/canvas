@@ -2,6 +2,7 @@ define(['particle'],function(Particle){
 	function Shape(x, y, text, W, H){
 	    this.x = x;
 	    this.y = y;
+	    this.size = 200;
 	    this.text = text;
 	    this.W = W;
 	    this.H = H;	    	    
@@ -22,6 +23,9 @@ define(['particle'],function(Particle){
 		   	   var idata = context.getImageData(0, 0, W, H);
 		   	   var buffer32 = new Uint32Array(idata.data.buffer);
 
+
+		   	   console.log(this.size,this.text,this.x,this.y);
+
 		   	   for(var j=0; j<H; j += gridY ){
 	               for(var i=0; i<W; i += gridX){
 	                      if(buffer32[j * W + i]){
@@ -30,6 +34,7 @@ define(['particle'],function(Particle){
 	                      }
 	               }
 		   	   }
+
 
 		   	   context.clearRect(0, 0, W, H);
 		   }
