@@ -20,6 +20,7 @@ var require = {
         canvasBall:'../../js/lib/canvasBall/canvasBall',
         canvasShip:'../../js/lib/canvasShip/canvasShip',
         shape:'../../js/lib/shape/shape',
+        box:'../../js/lib/box/box',
         utils:'../../js/lib/utils/utils',
         particle:'../../js/lib/particle/particle',         
     },
@@ -72,6 +73,9 @@ var require = {
         },
         canvasShip:{
               exports:'Ship'
+        },
+        box:{
+            exports:'Box'
         },
         utils:{
               exports:'utils'

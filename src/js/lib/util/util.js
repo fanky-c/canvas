@@ -106,6 +106,16 @@ util.containsPoint = function(rect, x, y){
       )
 }
 
+//检测物体是否碰撞
+util.isIntersects = function(rectA, rectB){
+      return !(
+            rectA.x + rectA.width < rectB.x ||
+            rectB.x + rectB.width < rectA.x ||
+            rectA.y + rectA.height < rectB.y ||
+            rectB.y + rectB.height < rectA.y
+        )
+}
+
 //兼容requestAnimationFrame
 if(!window.requestAnimationFrame){
     window.requestAnimationFrame = 
