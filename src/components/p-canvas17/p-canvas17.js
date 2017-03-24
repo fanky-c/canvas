@@ -46,10 +46,25 @@ require(['util','canvasArror','box',],function(util, arror, box){
       //监听keyup
       window.addEventListener('keyup',function(event){
             gravity = 0.02;
-      },false)
+      },false);
 
 
       //动画循环
-      
+      (function drawFrame(){
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            activeBox.vy += gravity;
+            activeBox.y += activeBox.vy;
+
+            //判断
+            if(activeBox.y + activeBox.height > canvas.height){
+                     activeBox.y = canvas.height - activeBox.height;
+                     activeBox = createBox();
+            }
+
+            //绘制
+            boxes.forEach(drawBox);
+      }())
 
 })
