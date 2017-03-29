@@ -17,6 +17,6 @@ Box.prototype = {
            this.context.closePath();
            this.context.stroke();
            this.context.fill();            
-           this.context.restore();	  
+           this.context.restore();  
 	  }
 }

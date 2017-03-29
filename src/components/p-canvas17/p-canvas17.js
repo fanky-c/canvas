@@ -10,12 +10,16 @@ require(['util','canvasArror','box',],function(util, arror, box){
 
       //创建box
       function createBox(){
-          var color = Math.random() * (0xffffff);
+          var color = '#' + Math.random() * (0xffffff);
+          //var color = "hsb(" +[ Math.random() ,Math.random(),1] +")";
           var box = new Box(context, Math.random()*40+10, Math.random()*40+10, color);
           box.x = Math.random() * W; 
           boxes.push(box);
           return box;
       }
+       
+
+        createBox()
 
       //画boxes
       function drawBox(box){
@@ -24,6 +28,8 @@ require(['util','canvasArror','box',],function(util, arror, box){
                   activeBox.y = box.y - activeBox.height;
                   activeBox = createBox();
           }
+
+          
 
           box.draw();
       }
