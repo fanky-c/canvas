@@ -8,7 +8,7 @@ function Box(context, x, y, color){
 
 Box.prototype = {
 	  constructor: Box,
-	  draw:function(context){
+	  draw:function(){
            this.context.save();
            this.context.beginPath();
            this.context.translate(this.x, this.y);

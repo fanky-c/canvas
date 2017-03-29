@@ -10,16 +10,13 @@ require(['util','canvasArror','box',],function(util, arror, box){
 
       //创建box
       function createBox(){
-          var color = '#' + Math.random() * (0xffffff);
-          //var color = "hsb(" +[ Math.random() ,Math.random(),1] +")";
+          //var color = '#' + Math.random() * (0xffffff);
+          var color = "#"+("00000"+((Math.random()*16777215+0.5)>>0).toString(16)).slice(-6);
           var box = new Box(context, Math.random()*40+10, Math.random()*40+10, color);
           box.x = Math.random() * W; 
           boxes.push(box);
           return box;
       }
-       
-
-        createBox()
 
       //画boxes
       function drawBox(box){
@@ -28,11 +25,10 @@ require(['util','canvasArror','box',],function(util, arror, box){
                   activeBox.y = box.y - activeBox.height;
                   activeBox = createBox();
           }
-
-          
-
+        
           box.draw();
       }
+
 
       //监听keydown
       window.addEventListener('keydown',function(event){
@@ -71,6 +67,7 @@ require(['util','canvasArror','box',],function(util, arror, box){
 
             //绘制
             boxes.forEach(drawBox);
+            //drawBox(activeBox)
       }())
 
 })
