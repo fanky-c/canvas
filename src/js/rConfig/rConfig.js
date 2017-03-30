@@ -22,7 +22,8 @@ var require = {
         shape:'../../js/lib/shape/shape',
         box:'../../js/lib/box/box',
         utils:'../../js/lib/utils/utils',
-        particle:'../../js/lib/particle/particle',         
+        particle:'../../js/lib/particle/particle',   
+        line:'../../js/lib/line/line',         
     },
     shim: {
         jQuery: {
@@ -76,6 +77,9 @@ var require = {
         },
         box:{
             exports:'Box'
+        },
+        line:{
+             exports:'Line'
         },
         utils:{
               exports:'utils'
