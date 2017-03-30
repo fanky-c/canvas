@@ -20,6 +20,7 @@ require(['util','canvasArror','canvasBall',],function(util, arror, ball){
             var ball =  new Ball();
             ball.x = Math.random() * 30 + 5;
             ball.y = Math.random() * 30 + 5;
+            ball.radius = Math.random() * 30 + 5;
             ball.color = "#"+("00000"+((Math.random()*16777215+0.5)>>0).toString(16)).slice(-6);
             ball.vx = Math.random() * 6 - 3;
             ball.vy = Math.random() * 6 - 3;
@@ -33,21 +34,21 @@ require(['util','canvasArror','canvasBall',],function(util, arror, ball){
              ball.y += ball.vy;
 
              if(ball.x + ball.radius > canvas.width){
-                     ball.x = canvas.width - ball.x;
+                     ball.x = canvas.width - ball.radius;
                      ball.vx *= bounce;
              }
 
-             if(ball.x + ball.radius < 0){
+             if(ball.x - ball.radius < 0){
                     ball.x = ball.radius;
                     ball.vx *= bounce;
              }
 
              if(ball.y + ball.radius > canvas.height){
-                     ball.y = canvas.height - ball.y;
+                     ball.y = canvas.height - ball.radius;
                      ball.vy *= bounce;
              }
 
-             if(ball.y + ball.radius < 0){
+             if(ball.y - ball.radius < 0){
                     ball.y = ball.radius;
                     ball.vy *= bounce;
              }
