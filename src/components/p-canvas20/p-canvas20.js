@@ -6,32 +6,6 @@ require(['util','line','canvasBall',],function(_util, _line, _ball){
       var context = canvas.getContext('2d');
       var W = canvas.width;
       var H = canvas.height;
-      // var scrollBall = new Ball();
-      // var vr = 0.05;  //每一帧转动弧度值
-      // var cos = Math.cos(vr); //得到的cos值
-      // var sin = Math.sin(vr); //得到的sin值
-      // var centerX = W / 2;
-      // var centerY = H / 2;
-
-      // scrollBall.x = Math.random() * W;
-      // scrollBall.y = Math.random() * H;
-
-
-      // (function drawFrame(){
-      //       window.requestAnimationFrame(drawFrame, canvas);
-      //       context.clearRect(0, 0, canvas.width, canvas.height);
-
-      //       var x1 = scrollBall.x - centerX;  //相对中心点位置
-      //       var y1 = scrollBall.y - centerY;
-
-      //       var newX = x1*cos - x1*sin;   //旋转一定角度后的位置
-      //       var newY = y1*cos - y1*sin;
-
-      //       scrollBall.x = centerX + newX;   //更新位置
-      //       scrollBall.y = centerY + newY;
-
-      //       scrollBall.draw(context);
-      // }())
 
 
     //A 简单的角度旋转
@@ -54,69 +28,83 @@ require(['util','line','canvasBall',],function(_util, _line, _ball){
     //   }());
     
 
-    //B  高级角度旋转
-    
-    var ball = new Ball(),
-        line = new Line(0, 0, 300, 0),
-        mouse = utils.captureMouse(canvas),
-        gravity = 0.2,
-        bounce = -0.6;
-
-        ball.x = 100;
-        ball.y = 100;
-
-        line.x = 50;
-        line.y = 300;
-
-
-      (function drawFrame() {
-        window.requestAnimationFrame(drawFrame, canvas);
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
-        line.rotation = (mouse.x - canvas.width / 2) * 0.1 * Math.PI / 180;
-
-        ball.vy += gravity;
-        ball.x += ball.vx;
-        ball.y += ball.vy;
-
-        //ball与line碰撞检测
-        if (utils.isIntersects(ball.getBounds(), line.getBounds())) {
-          var cos = Math.cos(line.rotation),
-            sin = Math.sin(line.rotation);
-
-          var x1 = ball.x - line.x,
-            y1 = ball.y - line.y;
-
-          var y2 = y1 * cos - x1 * sin;
-
-          if (y2 > -ball.radius) {
-            var x2 = x1 * cos + y1 * sin;
-
-            //旋转速度
-
-            var vx1 = ball.vx * cos + ball.vy * sin,
-              vy1 = ball.vy * cos - ball.vx * sin;
-
-            y2 = -ball.radius;
-            vy1 *= bounce;
-
-            //旋转回去
-
-            x1 = x2 * cos - y2 * sin;
-            y1 = y2 * cos + x2 * sin;
-
-            ball.vx = vx1 * cos - vy1 * sin;
-            ball.vy = vy1 * cos - vx1 * sin;
-
-            ball.x = x1 + line.x;
-            ball.y = y1 + line.y
-          }
-        }
-
-
-        ball.draw(context);
-        line.draw(context);
-
-      }())
+    //B  高级角度旋转    
+     var vr = 0.05,
+         ball = new Ball();
+         cos = Math.cos(vr),
+         sin = Math.sin(vr),
+         centerX = canvas.width/2,
+         centerY = canvas.height/2,
+         canvasWidth = canvas.width,
+         canvasHeight = canvas.height;
+     
+         
+     ball.x = Math.random()*canvasWidth;
+     ball.y = Math.random()*canvasHeight;
+     
+     function circle(angle, radius){
+         context.save();
+         context.strokeStyle = "white";
+         context.beginPath();
+         context.arc(centerX, centerX, 50, 0, angle, false);
+         context.arc(centerX, centerX, radius, 0, Math.PI*2, false); 
+         context.stroke();
+         context.restore();
+     }
+      function text(angle){
+          context.save();
+          context.beginPath();
+          context.strokeStyle = "#49f";
+          context.font = "20px Arial";
+          context.strokeText(-(angle*360/Math.PI).toFixed(0), centerX-55, centerY+50);
+          context.closePath();
+          context.stroke();
+          context.restore();
+     }
+     function coordinate(){
+         context.save();
+         context.strokeStyle = "white";
+         context.beginPath();
+         context.moveTo(0, canvasHeight/2);
+         context.lineTo(canvasWidth, canvasHeight/2);
+         context.moveTo(canvasWidth/2, 0);
+         context.lineTo(canvasWidth/2, canvasHeight);
+         context.closePath();
+         context.stroke();
+         context.restore();
+     }
+     
+     (function drawFrame(){
+         window.requestAnimationFrame(drawFrame, canvas);
+         context.clearRect(0, 0, canvas.width, canvas.height);
+         
+         coordinate(context);
+         
+         var x1 = ball.x - centerX;
+         var y1 = ball.y - centerY;
+         
+         var x2 = x1*cos - y1*sin;
+         var y2 = y1*cos + x1*sin;
+         
+         ball.x = centerX + x2;
+         ball.y = centerY + y2;
+         
+         var dx = ball.x - centerX;
+         var dy = ball.y - centerY;
+         var radius = Math.sqrt(dx*dx + dy*dy);
+         var angle = Math.atan2(dy, dx);
+         circle(angle, radius);
+         text(angle);
+         
+         context.save();
+         context.strokeStyle = "white";
+         context.moveTo(centerX, centerY);
+         context.lineTo(ball.x, ball.y);
+         context.stroke();
+         context.restore();
+         
+         ball.draw(context);
+         
+     }());
       
 })
