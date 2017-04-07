@@ -29,7 +29,7 @@ require(['util','line','canvasBall',],function(_util, _line, _ball){
     
 
     //B  高级角度旋转    
-     var vr = 0.05,
+     var vr = 0.005,
          ball = new Ball();
          cos = Math.cos(vr),
          sin = Math.sin(vr),
