@@ -1,0 +1,15 @@
+extends ../../templates/layout
+
+block title
+    | 万有引力
+block head
+    link(rel="stylesheet", href="../../css/canvas21.css", type="text/css")
+
+block body  
+     canvas(id='canvas',width='800',height='800')
+         p you browser not support canvas!                                               
+
+
+
+append script
+    script(src="../../js/lib/requirejs/require.js", data-main="./p-canvas21.js")          
