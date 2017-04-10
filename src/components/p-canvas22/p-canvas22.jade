@@ -1,0 +1,15 @@
+extends ../../templates/layout
+
+block title
+    | 3D
+block head
+    link(rel="stylesheet", href="../../css/canvas22.css", type="text/css")
+
+block body  
+     canvas(id='canvas',width='800',height='800')
+         p you browser not support canvas!                                               
+
+
+
+append script
+    script(src="../../js/lib/requirejs/require.js", data-main="./p-canvas22.js")          
