@@ -1,4 +1,4 @@
 /dist/
 /node_modules/
 /src/components/.sass-cache/
-*.lock
+yarn.lock
